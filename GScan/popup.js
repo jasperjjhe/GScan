@@ -12,10 +12,24 @@ scanBtn.addEventListener("click", async () => {
     return;
   }
 
+  // Get API key before continuing
+  const { urlscanApiKey } = await new Promise(resolve => {
+    chrome.storage.local.get("urlscanApiKey", resolve);
+  });
+
+  if (!urlscanApiKey) {
+    resultList.innerHTML = `
+      <li style="color:red;">
+        API key not found. Please go to extension settings and enter your urlscan.io API key.
+      </li>
+    `;
+    return;
+  }
+
   chrome.tabs.sendMessage(tab.id, { type: "extractLinks" }, (response) => {
     if (chrome.runtime.lastError) {
       console.error("Content script error:", chrome.runtime.lastError.message);
-      resultList.innerHTML = "<li>⚠️ Unable to scan. Please make sure you have an email open in Gmail and try again.</li>";
+      resultList.innerHTML = "<li>Unable to scan. Please make sure you have an email open in Gmail and try again.</li>";
       return;
     }
 
@@ -42,7 +56,7 @@ scanBtn.addEventListener("click", async () => {
         completed++;
 
         if (!res || res.error) {
-          li.innerHTML = `<span style="color:red;">⚠️ Error scanning <code>${url}</code>: ${res?.error || 'Unknown error'}</span>`;
+          li.innerHTML = `<span style="color:red;">Error scanning <code>${url}</code>: ${res?.error || 'Unknown error'}</span>`;
           errorCount++;
         } else {
           const { resultUrl, verdict, categories } = res;
