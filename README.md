@@ -1,6 +1,8 @@
 # This is GScan.
 A lightweight Chromium-based extension that scans Gmail email messages for malicious links using [urlscan.io](https://urlscan.io).
 
+Note that this will only return the [urlscan.io](https://urlscan.io) verdict result.
+
 ## Compatibility:
 - Chromium browsers (e.g. Google Chrome, Opera, etc.)
 - Gmail webmail ([mail.google.com](https://mail.google.com))
